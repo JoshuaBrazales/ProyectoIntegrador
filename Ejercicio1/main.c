@@ -3,29 +3,29 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#define MAX_PRODUCTS 100
-#define MAX_CUSTOMERS 100
-#define MAX_INVOICES 100
+#define MAX_PRODUCTOS 100
+#define MAX_CLIENTES 100
+#define MAX_FACTURAS 100
 #define MAX_GENEROS 5
 
 typedef struct {
-    char name[50];
-    int quantity;
-    float price;
-} Product;
+    char nombre[50];
+    int cantidad;
+    float precio;
+} Producto;
 
 typedef struct {
     char cedula[11];
-    char name[50];
-} Customer;
+    char nombre[50];
+} Cliente;
 
 typedef struct {
-    char date[11];
+    char fecha[11];
     char cedula[11];
-    char name[50];
-    float amountPaid;
-    int productsPurchased;
-} Invoice;
+    char nombre[50];
+    float montoPagado;
+    int productosComprados;
+} Factura;
 
 typedef struct {
     int vinilos;
@@ -35,95 +35,95 @@ typedef struct {
 
 const char* generos[MAX_GENEROS] = {"Jazz", "Funk", "Pop", "Reguetón", "Clásico"};
 
-Product products[MAX_PRODUCTS];
-int numProducts = 0;
-Customer customers[MAX_CUSTOMERS];
-int numCustomers = 0;
-Invoice invoices[MAX_INVOICES];
-int numInvoices = 0;
+Producto productos[MAX_PRODUCTOS];
+int numProductos = 0;
+Cliente clientes[MAX_CLIENTES];
+int numClientes = 0;
+Factura facturas[MAX_FACTURAS];
+int numFacturas = 0;
 Inventario inventario[MAX_GENEROS] = {0};
 
-void loadProducts() {
-    FILE *file = fopen("products.txt", "r");
-    if (file != NULL) {
-        while (fscanf(file, "%s %d %f", products[numProducts].name, &products[numProducts].quantity, &products[numProducts].price) != EOF) {
-            numProducts++;
+void cargarProductos() {
+    FILE *archivo = fopen("productos.txt", "r");
+    if (archivo != NULL) {
+        while (fscanf(archivo, "%s %d %f", productos[numProductos].nombre, &productos[numProductos].cantidad, &productos[numProductos].precio) != EOF) {
+            numProductos++;
         }
-        fclose(file);
+        fclose(archivo);
     }
 }
 
-void saveProducts() {
-    FILE *file = fopen("products.txt", "w");
-    for (int i = 0; i < numProducts; i++) {
-        fprintf(file, "%s %d %.2f\n", products[i].name, products[i].quantity, products[i].price);
+void guardarProductos() {
+    FILE *archivo = fopen("productos.txt", "w");
+    for (int i = 0; i < numProductos; i++) {
+        fprintf(archivo, "%s %d %.2f\n", productos[i].nombre, productos[i].cantidad, productos[i].precio);
     }
-    fclose(file);
+    fclose(archivo);
 }
 
-void loadCustomers() {
-    FILE *file = fopen("customers.txt", "r");
-    if (file != NULL) {
-        while (fscanf(file, "%s %s", customers[numCustomers].cedula, customers[numCustomers].name) != EOF) {
-            numCustomers++;
+void cargarClientes() {
+    FILE *archivo = fopen("clientes.txt", "r");
+    if (archivo != NULL) {
+        while (fscanf(archivo, "%s %s", clientes[numClientes].cedula, clientes[numClientes].nombre) != EOF) {
+            numClientes++;
         }
-        fclose(file);
+        fclose(archivo);
     }
 }
 
-void saveCustomers() {
-    FILE *file = fopen("customers.txt", "w");
-    for (int i = 0; i < numCustomers; i++) {
-        fprintf(file, "%s %s\n", customers[i].cedula, customers[i].name);
+void guardarClientes() {
+    FILE *archivo = fopen("clientes.txt", "w");
+    for (int i = 0; i < numClientes; i++) {
+        fprintf(archivo, "%s %s\n", clientes[i].cedula, clientes[i].nombre);
     }
-    fclose(file);
+    fclose(archivo);
 }
 
-void loadInvoices() {
-    FILE *file = fopen("invoices.txt", "r");
-    if (file != NULL) {
-        while (fscanf(file, "%s %s %s %f %d", invoices[numInvoices].date, invoices[numInvoices].cedula, invoices[numInvoices].name, &invoices[numInvoices].amountPaid, &invoices[numInvoices].productsPurchased) != EOF) {
-            numInvoices++;
+void cargarFacturas() {
+    FILE *archivo = fopen("facturas.txt", "r");
+    if (archivo != NULL) {
+        while (fscanf(archivo, "%s %s %s %f %d", facturas[numFacturas].fecha, facturas[numFacturas].cedula, facturas[numFacturas].nombre, &facturas[numFacturas].montoPagado, &facturas[numFacturas].productosComprados) != EOF) {
+            numFacturas++;
         }
-        fclose(file);
+        fclose(archivo);
     }
 }
 
-void saveInvoices() {
-    FILE *file = fopen("invoices.txt", "w");
-    for (int i = 0; i < numInvoices; i++) {
-        fprintf(file, "%s %s %s %.2f %d\n", invoices[i].date, invoices[i].cedula, invoices[i].name, invoices[i].amountPaid, invoices[i].productsPurchased);
+void guardarFacturas() {
+    FILE *archivo = fopen("facturas.txt", "w");
+    for (int i = 0; i < numFacturas; i++) {
+        fprintf(archivo, "%s %s %s %.2f %d\n", facturas[i].fecha, facturas[i].cedula, facturas[i].nombre, facturas[i].montoPagado, facturas[i].productosComprados);
     }
-    fclose(file);
+    fclose(archivo);
 }
 
-void addProduct() {
-    if (numProducts >= MAX_PRODUCTS) {
+void agregarProducto() {
+    if (numProductos >= MAX_PRODUCTOS) {
         printf("No se pueden agregar más productos.\n");
         return;
     }
     printf("Ingrese el nombre del producto: ");
-    scanf("%s", products[numProducts].name);
+    scanf("%s", productos[numProductos].nombre);
     printf("Ingrese la cantidad del producto: ");
-    scanf("%d", &products[numProducts].quantity);
+    scanf("%d", &productos[numProductos].cantidad);
     printf("Ingrese el precio del producto: ");
-    scanf("%f", &products[numProducts].price);
-    numProducts++;
-    saveProducts();
+    scanf("%f", &productos[numProductos].precio);
+    numProductos++;
+    guardarProductos();
     printf("Producto agregado exitosamente.\n");
 }
 
-void modifyProduct() {
-    char name[50];
+void modificarProducto() {
+    char nombre[50];
     printf("Ingrese el nombre del producto a modificar: ");
-    scanf("%s", name);
-    for (int i = 0; i < numProducts; i++) {
-        if (strcmp(products[i].name, name) == 0) {
+    scanf("%s", nombre);
+    for (int i = 0; i < numProductos; i++) {
+        if (strcmp(productos[i].nombre, nombre) == 0) {
             printf("Ingrese la nueva cantidad: ");
-            scanf("%d", &products[i].quantity);
+            scanf("%d", &productos[i].cantidad);
             printf("Ingrese el nuevo precio: ");
-            scanf("%f", &products[i].price);
-            saveProducts();
+            scanf("%f", &productos[i].precio);
+            guardarProductos();
             printf("Producto modificado exitosamente.\n");
             return;
         }
@@ -131,17 +131,17 @@ void modifyProduct() {
     printf("Producto no encontrado.\n");
 }
 
-void deleteProduct() {
-    char name[50];
+void eliminarProducto() {
+    char nombre[50];
     printf("Ingrese el nombre del producto a eliminar: ");
-    scanf("%s", name);
-    for (int i = 0; i < numProducts; i++) {
-        if (strcmp(products[i].name, name) == 0) {
-            for (int j = i; j < numProducts - 1; j++) {
-                products[j] = products[j + 1];
+    scanf("%s", nombre);
+    for (int i = 0; i < numProductos; i++) {
+        if (strcmp(productos[i].nombre, nombre) == 0) {
+            for (int j = i; j < numProductos - 1; j++) {
+                productos[j] = productos[j + 1];
             }
-            numProducts--;
-            saveProducts();
+            numProductos--;
+            guardarProductos();
             printf("Producto eliminado exitosamente.\n");
             return;
         }
@@ -149,17 +149,17 @@ void deleteProduct() {
     printf("Producto no encontrado.\n");
 }
 
-void increaseStock() {
-    char name[50];
-    int quantity;
+void aumentarStock() {
+    char nombre[50];
+    int cantidad;
     printf("Ingrese el nombre del producto: ");
-    scanf("%s", name);
+    scanf("%s", nombre);
     printf("Ingrese la cantidad a aumentar: ");
-    scanf("%d", &quantity);
-    for (int i = 0; i < numProducts; i++) {
-        if (strcmp(products[i].name, name) == 0) {
-            products[i].quantity += quantity;
-            saveProducts();
+    scanf("%d", &cantidad);
+    for (int i = 0; i < numProductos; i++) {
+        if (strcmp(productos[i].nombre, nombre) == 0) {
+            productos[i].cantidad += cantidad;
+            guardarProductos();
             printf("Stock aumentado exitosamente.\n");
             return;
         }
@@ -167,28 +167,28 @@ void increaseStock() {
     printf("Producto no encontrado.\n");
 }
 
-void addCustomer() {
-    if (numCustomers >= MAX_CUSTOMERS) {
+void agregarCliente() {
+    if (numClientes >= MAX_CLIENTES) {
         printf("No se pueden agregar más clientes.\n");
         return;
     }
-    ingreso_cedula(customers[numCustomers].cedula);
+    ingresoCedula(clientes[numClientes].cedula);
     printf("Ingrese el nombre del cliente: ");
-    scanf("%s", customers[numCustomers].name);
-    numCustomers++;
-    saveCustomers();
+    scanf("%s", clientes[numClientes].nombre);
+    numClientes++;
+    guardarClientes();
     printf("Cliente agregado exitosamente.\n");
 }
 
-void modifyCustomer() {
+void modificarCliente() {
     char cedula[11];
     printf("Ingrese la cédula del cliente a modificar: ");
     scanf("%s", cedula);
-    for (int i = 0; i < numCustomers; i++) {
-        if (strcmp(customers[i].cedula, cedula) == 0) {
+    for (int i = 0; i < numClientes; i++) {
+        if (strcmp(clientes[i].cedula, cedula) == 0) {
             printf("Ingrese el nuevo nombre: ");
-            scanf("%s", customers[i].name);
-            saveCustomers();
+            scanf("%s", clientes[i].nombre);
+            guardarClientes();
             printf("Cliente modificado exitosamente.\n");
             return;
         }
@@ -196,61 +196,61 @@ void modifyCustomer() {
     printf("Cliente no encontrado.\n");
 }
 
-void listCustomers() {
+void listarClientes() {
     printf("\nLista de clientes:\n");
-    for (int i = 0; i < numCustomers; i++) {
-        printf("Cédula: %s, Nombre: %s\n", customers[i].cedula, customers[i].name);
+    for (int i = 0; i < numClientes; i++) {
+        printf("Cédula: %s, Nombre: %s\n", clientes[i].cedula, clientes[i].nombre);
     }
 }
 
-void createInvoice() {
-    if (numInvoices >= MAX_INVOICES) {
+void crearFactura() {
+    if (numFacturas >= MAX_FACTURAS) {
         printf("No se pueden crear más facturas.\n");
         return;
     }
     printf("Ingrese la fecha (dd/mm/yyyy): ");
-    scanf("%s", invoices[numInvoices].date);
-    ingreso_cedula(invoices[numInvoices].cedula);
+    scanf("%s", facturas[numFacturas].fecha);
+    ingresoCedula(facturas[numFacturas].cedula);
     printf("Ingrese el nombre del cliente: ");
-    scanf("%s", invoices[numInvoices].name);
+    scanf("%s", facturas[numFacturas].nombre);
     printf("Ingrese el valor pagado: ");
-    scanf("%f", &invoices[numInvoices].amountPaid);
+    scanf("%f", &facturas[numFacturas].montoPagado);
     printf("Ingrese la cantidad de productos comprados: ");
-    scanf("%d", &invoices[numInvoices].productsPurchased);
-    numInvoices++;
-    saveInvoices();
+    scanf("%d", &facturas[numFacturas].productosComprados);
+    numFacturas++;
+    guardarFacturas();
     printf("Factura creada exitosamente.\n");
 }
 
-void listInvoices() {
+void listarFacturas() {
     printf("\nLista de facturas:\n");
-    for (int i = 0; i < numInvoices; i++) {
+    for (int i = 0; i < numFacturas; i++) {
         printf("Fecha: %s, Cédula: %s, Nombre: %s, Valor pagado: %.2f, Cantidad de productos: %d\n",
-               invoices[i].date, invoices[i].cedula, invoices[i].name,
-               invoices[i].amountPaid, invoices[i].productsPurchased);
+               facturas[i].fecha, facturas[i].cedula, facturas[i].nombre,
+               facturas[i].montoPagado, facturas[i].productosComprados);
     }
 }
 
 int m2[10];
 char cedula[11];
 
-void ingreso_cedula(char *cedula) {
-    int valid = 0;
-    while (!valid) {
+void ingresoCedula(char *cedula) {
+    int valido = 0;
+    while (!valido) {
         printf("Ingrese el número de cédula: ");
         scanf("%s", cedula);
-        valid = 1;
+        valido = 1;
 
         if (strlen(cedula) != 10) {
             printf("La cédula debe tener 10 dígitos.\n");
-            valid = 0;
+            valido = 0;
             continue;
         }
 
         for (int i = 0; i < 10; i++) {
             if (!isdigit(cedula[i])) {
                 printf("La cédula debe contener solo dígitos.\n");
-                valid = 0;
+                valido = 0;
                 break;
             }
         }
@@ -258,16 +258,16 @@ void ingreso_cedula(char *cedula) {
         int provincia = (cedula[0] - '0') * 10 + (cedula[1] - '0');
         if (provincia < 1 || provincia > 24) {
             printf("Provincia no válida en la cédula.\n");
-            valid = 0;
+            valido = 0;
         }
 
-        if (valid) {
+        if (valido) {
             for (int i = 0; i < 10; i++) {
                 m2[i] = cedula[i] - '0';
             }
+            validacion(cedula);
         }
     }
-    validacion(cedula);
 }
 
 void validacion(char *cedula) {
@@ -380,57 +380,57 @@ void modificarInventario(Inventario inventario[MAX_GENEROS]) {
 }
 
 int main() {
-    loadProducts();
-    loadCustomers();
-    loadInvoices();
+    cargarProductos();
+    cargarClientes();
+    cargarFacturas();
 
-    int choice;
+    int eleccion;
 
     do {
         printf("\nSistema de Inventarios\n");
         printf("1. Ingresar Producto\n");
         printf("2. Modificar Producto\n");
         printf("3. Eliminar Producto\n");
-        printf("4. Adicionar compra Producto (aumentar stock)\n");
+        printf("4. Aumentar stock de Producto\n");
         printf("5. Ingresar Cliente\n");
         printf("6. Modificar Cliente\n");
         printf("7. Ver listado de clientes\n");
-        printf("8. Facturar\n");
+        printf("8. Crear Factura\n");
         printf("9. Ver listado de facturas\n");
         printf("10. Mostrar Inventario Musical\n");
         printf("11. Ingresar Inventario Musical\n");
         printf("12. Modificar Inventario Musical\n");
         printf("0. Salir\n");
         printf("Ingrese su elección: ");
-        scanf("%d", &choice);
+        scanf("%d", &eleccion);
 
-        switch (choice) {
+        switch (eleccion) {
             case 1:
-                addProduct();
+                agregarProducto();
                 break;
             case 2:
-                modifyProduct();
+                modificarProducto();
                 break;
             case 3:
-                deleteProduct();
+                eliminarProducto();
                 break;
             case 4:
-                increaseStock();
+                aumentarStock();
                 break;
             case 5:
-                addCustomer();
+                agregarCliente();
                 break;
             case 6:
-                modifyCustomer();
+                modificarCliente();
                 break;
             case 7:
-                listCustomers();
+                listarClientes();
                 break;
             case 8:
-                createInvoice();
+                crearFactura();
                 break;
             case 9:
-                listInvoices();
+                listarFacturas();
                 break;
             case 10:
                 mostrarInventario(inventario);
@@ -442,12 +442,12 @@ int main() {
                 modificarInventario(inventario);
                 break;
             case 0:
-                printf("Saliendo del sistema...\n");
+                printf("Saliendo del sistema\n");
                 break;
             default:
                 printf("Opción no válida. Intente nuevamente.\n");
         }
-    } while (choice != 0);
+    } while (eleccion != 0);
 
     return 0;
 }
